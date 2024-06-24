@@ -3,6 +3,7 @@ package ru.practicum.user;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,8 +17,13 @@ class UserMapper {
                 .withZone(ZoneOffset.UTC)
                 .format(user.getRegistrationDate());
 
+        String birthDate = DateTimeFormatter
+                .ofPattern("yyyy.MM.dd hh:mm:ss")
+                .withZone(ZoneOffset.UTC)
+                .format(user.getRegistrationDate());
+
         return new UserDto(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), regDate, user.getState(),
-                user.getDateOfBirth());
+                birthDate);
     }
 
     public static List<UserDto> mapToUserDto(Iterable<User> users) {
@@ -36,7 +42,7 @@ class UserMapper {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setState(userDto.getState());
-        user.setDateOfBirth(userDto.getDateOfBirth());
+        user.setDateOfBirth(LocalDate.parse(userDto.getDateOfBirth()));
         return user;
     }
 }

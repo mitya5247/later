@@ -1,7 +1,5 @@
 package ru.practicum.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,8 +31,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserState state;
 
-    @JsonFormat(pattern = "yyyy-MM-dd@HH:mm:ss")
-    private String dateOfBirth;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     @Override
     public boolean equals(Object o) {
