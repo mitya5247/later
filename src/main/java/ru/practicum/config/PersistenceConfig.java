@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -28,7 +29,7 @@ public class PersistenceConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+      //  properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", environment.getProperty("hibernate.show_sql", "false"));
         properties.put("javax.persistence.schema-generation.database.action",
                 environment.getProperty("javax.persistence.schema-generation.database.action", "none"));
@@ -39,11 +40,27 @@ public class PersistenceConfig {
 
     @Bean
     public DataSource dataSource() {
+        Profiles profiles = Profiles.of(environment.getActiveProfiles());
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-        dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-        dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-        dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+        String profile = environment.getRequiredProperty("spring.profiles.active");
+        if (profile.equals("test")) {
+            dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
+            dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
+            dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
+            dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+        }
+
+//        if (profiles.matches(s -> s.equals("test"))) {
+//            dataSource.setDriverClassName(environment.getRequiredProperty("spring.datasource.driverClassName"));
+//            dataSource.setUrl(environment.getRequiredProperty("spring.datasource.url"));
+//            dataSource.setUsername(environment.getRequiredProperty("spring.datasource.username"));
+//            dataSource.setPassword(environment.getRequiredProperty("spring.datasource.password"));
+//        } else {
+//            dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
+//            dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
+//            dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
+//            dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+//        }
         return dataSource;
     }
 

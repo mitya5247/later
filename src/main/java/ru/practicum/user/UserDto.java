@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +17,8 @@ public class UserDto {
     private String email;
     private String firstName;
     private String lastName;
-    private String registrationDate;
-    private UserState state;
+    private String registrationDate = String.valueOf(LocalDate.now());
+    private UserState state = UserState.ACTIVE;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private String dateOfBirth;
+    private String dateOfBirth = String.valueOf(LocalDate.of(1998, 12,12));
 }

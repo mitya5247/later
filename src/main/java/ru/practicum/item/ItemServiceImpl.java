@@ -29,6 +29,8 @@ class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Item item = repository.save(ItemMapper.mapToItem(itemDto, user));
+        UrlMetadata metadata = new UrlMetaDataRetrieverImpl();
+        metadata.retrieve(item.getUrl());
         return ItemMapper.mapToItemDto(item);
     }
 
