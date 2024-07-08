@@ -29,15 +29,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
-@SpringJUnitWebConfig({WebConfig.class, ItemControllerTestConfig.class})
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@SpringJUnitWebConfig({WebConfig.class, ItemControllerTestConfig.class, ItemController.class})
 public class ItemControllerTestWithContext {
 
     MockMvc mvc;
-
-    @Mock
-    ItemService service;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -45,7 +40,12 @@ public class ItemControllerTestWithContext {
 
     UserDto userDto;
 
-    private final ItemController controller;
+    private final ItemService service;
+
+    @Autowired
+    public ItemControllerTestWithContext(ItemService service) {
+        this.service = service;
+    }
 
     @BeforeEach
     public void setUp(WebApplicationContext context) {
@@ -72,13 +72,15 @@ public class ItemControllerTestWithContext {
     @Test
     public void save() throws Exception {
 
-        Mockito.when(service.addNewItem(userDto.getId(), itemDto))
+        Mockito.when(service.addNewItem(Mockito.anyLong(), Mockito.any(ItemDto.class)))
                 .thenReturn(itemDto);
+
+        String json = mapper.writeValueAsString(itemDto);
 
         mvc.perform(post("/items")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(itemDto))
+                        .content(json)
                         .header("X-Later-User-Id", userDto.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

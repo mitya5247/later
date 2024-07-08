@@ -9,7 +9,7 @@ import static org.mockito.Mockito.mock;
 @Configuration
 public class ItemControllerTestConfig {
     @Bean
-    public ItemController controller() {
-        return mock(ItemController.class);
+    public ItemService controller() {
+        return mock(ItemService.class);
     }
 }
