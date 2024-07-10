@@ -5,18 +5,21 @@ version: '3.8'
 services:
   # описание контейнера db
   db:
+    container_name: postgres_db
     # образ, из которого должен быть запущен контейнер
-    image: postgres:13.7-alpine
+    image: postgres:14-alpine
     # volume и связанная с ним директория в контейнере
     volumes:
       - /var/lib/postgresql/data/
     # переменные окружения
     environment:
-      - POSTGRES_DB=later
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+        - POSTGRES_DB=later
+        - POSTGRES_USER=later_admin
+        - POSTGRES_PASSWORD=admin@aDminNew
+    ports:
+      - "5435:5432"
 
-  web:
+  webapp:
     build: .
     ports:
       - "8080:8080"
@@ -26,7 +29,9 @@ services:
     # переменные окружения
     environment:
       - DB_NAME=later
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=later_admin
+      - POSTGRES_PASSWORD=admin@aDmin
       - DB_HOST=db
       - DB_PORT=5432
+
+
